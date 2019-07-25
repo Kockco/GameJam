@@ -26,8 +26,9 @@ public class NextScene : MonoBehaviour
     private void CutSceneFade()
     {
         _spr.color = new Color(1, 1, 1, _fadeTime);
-        if(_anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0)
+        if(_anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.98f)
         {
+            _anim.speed = 0;
             _fadeTime -= 0.01f;
             if(_fadeTime <= 0)
             {
