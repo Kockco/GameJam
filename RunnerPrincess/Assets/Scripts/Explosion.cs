@@ -33,15 +33,5 @@ public class Explosion : MonoBehaviour
             myBox.enabled = true;
         }
     }
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.transform.name == "Character")
-        {
-            // if(애니 사망)
-            // 몇초뒤 사라짐
-            Debug.Log("die");
-
-            collision.gameObject.SetActive(false);
-        }
-    }
+   
 }

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - SavePoint
+  - Bomb
   layers:
   - Default
   - TransparentFX

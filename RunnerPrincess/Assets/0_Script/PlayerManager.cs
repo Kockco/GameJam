@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -49,6 +50,8 @@ public class PlayerManager : MonoBehaviour
 
     private void PlayerMove()
     {
+        if (_isDead)
+            return;
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
         
@@ -85,10 +88,12 @@ public class PlayerManager : MonoBehaviour
         {
             _anim.SetInteger("PlayerState", 2);
             _deaddelay += Time.deltaTime;
-            if (_deaddelay >= 2)
+            if (_deaddelay >= 0.7f)
             {
-                _deaddelay = 0;
+                _deaddelay = 0;                
                 gameObject.SetActive(false);
+                _isDead = false;
+                SceneManager.LoadScene("Stage1");
             }
         }
     }
@@ -99,6 +104,16 @@ public class PlayerManager : MonoBehaviour
         {
             case "Save":
                 _savepoint++;
+                break;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        switch(collision.tag)
+        {
+            case "Bomb":
+                _isDead = true;
                 break;
         }
     }
