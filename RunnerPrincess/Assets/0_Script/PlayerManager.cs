@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour
@@ -8,6 +9,11 @@ public class PlayerManager : MonoBehaviour
     Rigidbody2D _rigid;
     Vector3 Movement;
     Animator _anim;
+
+    // Fade
+    public Image _fadeimg;
+    private float _fadetime = 0;
+    private bool _bfade;
 
     // Player Speed
     public float _speed;
@@ -39,7 +45,7 @@ public class PlayerManager : MonoBehaviour
         PlayerWalk();
         PlayerRotation();
         PlayerDead();
-        Debug.Log(_isRun);
+        ClearFade();
     }
 
     private void FixedUpdate()
@@ -54,7 +60,7 @@ public class PlayerManager : MonoBehaviour
 
     private void PlayerMove()
     {
-        if (_isDead)
+        if (_isDead || _bfade)
             return;
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
@@ -94,6 +100,8 @@ public class PlayerManager : MonoBehaviour
 
     private void PlayerWalk()
     {
+        if (_isDead || _bfade)
+            return;
         if (!_isRun && _speed >= _savespeed && Input.GetAxisRaw("Horizontal") != 0 | Input.GetAxisRaw("Vertical") != 0 )
         {
             _isWalk = true;
@@ -124,12 +132,30 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider col)
+    private void ClearFade()
+    {
+        _fadeimg.color = new Color(1, 1, 1, _fadetime);
+        if (_bfade)
+        {
+            _fadetime += 0.005f;
+            if (_fadetime >= 1)
+            {
+                SceneManager.LoadScene("LastScene");
+            }
+        }
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D col)
     {
         switch (col.tag)
         {
             case "Save":
                 _savepoint++;
+                break;
+            case "Prince":
+                _bfade = true;
+                Debug.Log("맞음");
                 break;
         }
     }
