@@ -6,6 +6,7 @@ public class PlayerManager : MonoBehaviour
 {
     Rigidbody2D _rigid;
     Vector3 Movement;
+    Animator _anim;
 
     // Player Speed
     public float _speed;
@@ -18,15 +19,22 @@ public class PlayerManager : MonoBehaviour
     float h;
     float v;
 
+    // Player State
+    private bool _isDead;
+
+    private float _deaddelay = 0;
+
     private void Awake()
     {
         _rigid = GetComponent<Rigidbody2D>();
+        _anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
         PlayerRun();
         PlayerRotation();
+        PlayerDead();
     }
 
     private void FixedUpdate()
@@ -47,8 +55,7 @@ public class PlayerManager : MonoBehaviour
         Movement.Set(h, v, 0);
         Movement = Movement.normalized * _speed * Time.deltaTime;
         _rigid.MovePosition(_rigid.transform.position + Movement);
-
-        if(h == 1)
+        if (h == 1)
         {
             GetComponent<SpriteRenderer>().flipX = true;
         }
@@ -62,17 +69,28 @@ public class PlayerManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
-            _speed *= 1.5f;            
+            _speed *= 1.5f;
+            _anim.SetInteger("PlayerState", 1);
         }
         else if(Input.GetKeyUp(KeyCode.LeftShift))
         {
             _speed = _savespeed;
+            _anim.SetInteger("PlayerState", 0);
         }        
     }
 
     private void PlayerDead()
     {
-
+        if (_isDead)
+        {
+            _anim.SetInteger("PlayerState", 2);
+            _deaddelay += Time.deltaTime;
+            if (_deaddelay >= 2)
+            {
+                _deaddelay = 0;
+                gameObject.SetActive(false);
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider col)
