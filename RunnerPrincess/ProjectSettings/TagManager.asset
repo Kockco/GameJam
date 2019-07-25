@@ -6,6 +6,7 @@ TagManager:
   tags:
   - SavePoint
   - Bomb
+  - Prince
   layers:
   - Default
   - TransparentFX
