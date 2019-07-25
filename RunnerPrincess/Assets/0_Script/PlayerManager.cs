@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviour
     {
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
-
+        
         Movement.Set(h, v, 0);
         Movement = Movement.normalized * _speed * Time.deltaTime;
         _rigid.MovePosition(_rigid.transform.position + Movement);
