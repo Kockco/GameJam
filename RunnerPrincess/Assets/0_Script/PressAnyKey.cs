@@ -39,7 +39,7 @@ public class PressAnyKey : MonoBehaviour
             if (_fadealpha >= 1)
             {
                 _bStart = false;
-                SceneManager.LoadScene("Stage1");
+                SceneManager.LoadScene("CutScene");
             }
         }
     }
