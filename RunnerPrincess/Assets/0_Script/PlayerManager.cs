@@ -22,6 +22,8 @@ public class PlayerManager : MonoBehaviour
 
     // Player State
     private bool _isDead;
+    private bool _isRun;
+    private bool _isWalk;
 
     private float _deaddelay = 0;
 
@@ -34,8 +36,10 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         PlayerRun();
+        PlayerWalk();
         PlayerRotation();
         PlayerDead();
+        Debug.Log(_isRun);
     }
 
     private void FixedUpdate()
@@ -54,43 +58,65 @@ public class PlayerManager : MonoBehaviour
             return;
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
-        
+
         Movement.Set(h, v, 0);
         Movement = Movement.normalized * _speed * Time.deltaTime;
         _rigid.MovePosition(_rigid.transform.position + Movement);
         if (h == 1)
         {
             GetComponent<SpriteRenderer>().flipX = true;
+
         }
-        else if(h == -1)
+        else if (h == -1)
         {
-            GetComponent<SpriteRenderer>().flipX = false;                
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+    }
+    private void PlayerRun()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _isRun = true;
+            _isWalk = false;
+            _speed *= 2f;
+            if (_isRun)
+            {
+                _anim.SetInteger("PlayerState", 2);
+            }
+        }
+
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _speed = _savespeed;
+            _isRun = false;
         }
     }
 
-    private void PlayerRun()
+    private void PlayerWalk()
     {
-        if(Input.GetKeyDown(KeyCode.LeftShift))
+        if (!_isRun && _speed >= _savespeed && Input.GetAxisRaw("Horizontal") != 0 | Input.GetAxisRaw("Vertical") != 0 )
         {
-            _speed *= 2f;
-            _anim.SetInteger("PlayerState", 1);
+            _isWalk = true;
+            if (_isWalk)
+            {
+                _anim.SetInteger("PlayerState", 1);
+            }
         }
-        else if(Input.GetKeyUp(KeyCode.LeftShift))
+        else if(!_isRun && Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0 )
         {
-            _speed = _savespeed;
             _anim.SetInteger("PlayerState", 0);
-        }        
+        }
     }
 
     private void PlayerDead()
     {
         if (_isDead)
         {
-            _anim.SetInteger("PlayerState", 2);
+            _anim.SetInteger("PlayerState", 3);
             _deaddelay += Time.deltaTime;
             if (_deaddelay >= 0.7f)
             {
-                _deaddelay = 0;                
+                _deaddelay = 0;
                 gameObject.SetActive(false);
                 _isDead = false;
                 SceneManager.LoadScene("Stage1");
@@ -110,7 +136,7 @@ public class PlayerManager : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        switch(collision.tag)
+        switch (collision.tag)
         {
             case "Bomb":
                 _isDead = true;
