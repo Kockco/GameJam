@@ -2,25 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Explosion : MonoBehaviour
+public class Explosion2 : MonoBehaviour
 {
     Animator animator;
     BoxCollider2D myBox;
-    public float boomTime,
-        currentTime;
+    public float[] boomTime;
+    public float currentTime;
+    int a,b;
     private void Start()
     {
         animator = GetComponent<Animator>();
         myBox = GetComponent<BoxCollider2D>();
+        b = boomTime.Length;
+        a = 0;
     }
     private void Update()
     {
-        currentTime += Time.deltaTime;
-        if(currentTime > boomTime)
-        {
-            currentTime = 0;
-            animator.SetTrigger("Boom");
-        }
         if (!animator.GetCurrentAnimatorStateInfo(0).IsName("boom"))
         {
             myBox.enabled = false;
@@ -31,5 +28,17 @@ public class Explosion : MonoBehaviour
             myBox.enabled = true;
         }
     }
-   
+    private void FixedUpdate()
+    {
+        currentTime += 1 * Time.fixedDeltaTime;
+        if (currentTime > boomTime[a])
+        {
+            currentTime = 0;
+            animator.SetTrigger("Boom");
+            a++;
+            if (a == b)
+                a = 0;
+
+        }
+    }
 }
