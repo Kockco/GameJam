@@ -69,7 +69,7 @@ public class PlayerManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
-            _speed *= 1.5f;
+            _speed *= 2f;
             _anim.SetInteger("PlayerState", 1);
         }
         else if(Input.GetKeyUp(KeyCode.LeftShift))
